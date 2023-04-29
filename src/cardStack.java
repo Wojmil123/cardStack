@@ -1,51 +1,72 @@
-import org.w3c.dom.ls.LSOutput;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Stack;
 public class cardStack {
-    static int playersCount = 3;
     static int howManyCards = 15;
-    static Stack<Integer> cards = new Stack<Integer>();
-    static HashMap<String, ArrayList<Integer>> hand = new HashMap<String, ArrayList<Integer>>();
+    static Stack<Integer> cards = new Stack<>();
+    static HashMap<Integer, ArrayList<Integer>> hand = new HashMap<>();
+    static ArrayList<Integer> player1 = new ArrayList<>();
+    static ArrayList<Integer> player2 = new ArrayList<>();
+    static ArrayList<Integer> player3 = new ArrayList<>();
     public static void main(String[] args) {
-        int pid = 1;
+        startGame();
+        deal();
+        System.out.println("\r\n \r\n");
+        playerHand();
+    }
+
+
+    public static void startGame(){
         makeStack();
+        shuffleCards();
+        addPlayers();
+    }
+
+    public static void deal(){
+        int player = 1;
         while(cards.size() > 0){
-            System.out.println("Kolej gracza " + pid);
-            if(pid == 4) pid = 1;
+            System.out.println("Player " + player + "'s turn");
+            if(player == 4) player = 1;
             int card = pickCard();
-            pickToHand(pid, card);
-            System.out.println("Podniesiono kartę " + card);
-            if(cards.size() > 3) System.out.println("Karta na wierzchu: " + peekAtCard(pid));
-            System.out.println("pozostało kart" + cards.size());
-            pid ++;
+            pickToHand(player, card);
+            System.out.println("Card picked up: " + card);
+            if(cards.size() > 3) System.out.println("Card on top: " + peekAtCard());
+            player ++;
         }
-        playerHand(1);
-        playerHand(2);
-        playerHand(3);
+    }
+
+    public static void playerHand(){
+        for(int player : hand.keySet()){
+            System.out.println("Player " + player + "'s cards: " + hand.get(player));
+        }
     }
 
     public static void makeStack() {
-        for(int i = 0; i < howManyCards; i++){
-            cards.add(i);
-        }
+        for(int i = 0; i < howManyCards; i++)
+            cards.push(i);
+    }
+
+    public static void shuffleCards(){
+        Collections.shuffle(cards);
+    }
+
+    public static void addPlayers(){
+        hand.put(1, player1);
+        hand.put(2, player2);
+        hand.put(3, player3);
     }
 
     public static int pickCard(){
         return cards.pop();
     }
 
-    public static int peekAtCard(int player){
-        return hand.get("Player" + player);
+    public static int peekAtCard(){
+        return cards.peek();
     }
 
     public static void pickToHand(int player, int card){
-        hand.put(("Player" + player), card);
-    }
-
-    public static void playerHand(int player){
-        System.out.println(hand.get("Player" + player));
+        hand.get(player).add(card);
     }
 
 }
